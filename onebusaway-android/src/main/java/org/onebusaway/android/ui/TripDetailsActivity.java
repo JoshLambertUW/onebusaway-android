@@ -17,11 +17,13 @@
 package org.onebusaway.android.ui;
 
 import org.onebusaway.android.io.ObaAnalytics;
+import org.onebusaway.android.provider.ObaContract;
 import org.onebusaway.android.util.FragmentUtils;
 import org.onebusaway.android.util.UIUtils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +45,12 @@ public class TripDetailsActivity extends AppCompatActivity {
 
         public Builder setStopId(String stopId) {
             mIntent.putExtra(TripDetailsListFragment.STOP_ID, stopId);
+            return this;
+        }
+
+        public Builder setRouteId(String routeId) {
+            mIntent.putExtra(TripDetailsListFragment.ROUTE_ID, routeId);
+            mIntent.setData(Uri.withAppendedPath(ObaContract.Routes.CONTENT_URI, routeId));
             return this;
         }
 
@@ -71,6 +79,10 @@ public class TripDetailsActivity extends AppCompatActivity {
 
     public static void start(Context context, String tripId, String mode) {
         new Builder(context, tripId).setScrollMode(mode).start();
+    }
+
+    public static void start(Context context, String tripId, String stopId, String routeId, String mode) {
+        new Builder(context, tripId).setStopId(stopId).setRouteId(routeId).setScrollMode(mode).start();
     }
 
     public static void start(Context context, String tripId, String stopId, String mode) {

@@ -1619,7 +1619,7 @@ public class HomeActivity extends AppCompatActivity
             }
         }
     }
-    
+
     /**
      * Moves both Floating Action Buttons as response to sliding panel height changes.
      * <p>

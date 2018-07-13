@@ -756,8 +756,10 @@ public class ArrivalsListFragment extends ListFragment
 
                     routeDialog.show(getFragmentManager(), RouteFavoriteDialogFragment.TAG);
                 } else if (which == 1) {
+                    addRouteRecent(route);
                     showRouteOnMap(arrivalInfo);
                 } else if (which == 2) {
+                    addRouteRecent(route);
                     goToTripDetails(arrivalInfo);
                 } else if (which == 3) {
                     goToTrip(arrivalInfo);
@@ -805,9 +807,29 @@ public class ArrivalsListFragment extends ListFragment
     }
 
     /**
+     * Adds a route to the recent routes list
+     *
+     * @param route ObaRoute to use
+     */
+
+    public void addRouteRecent(ObaRoute route) {
+        ContentValues values = new ContentValues();
+        values.put(ObaContract.Routes.SHORTNAME, route.getShortName());
+        values.put(ObaContract.Routes.LONGNAME, route.getLongName());
+        values.put(ObaContract.Routes.URL, route.getUrl());
+        if (Application.get().getCurrentRegion() != null) {
+            values.put(ObaContract.Routes.REGION_ID,
+                    Application.get().getCurrentRegion().getId());
+        }
+        ObaContract.Routes.insertOrUpdate(getActivity(), route.getId(), values, true);
+    }
+
+    /**
      * Opens the discussion item related to this route ID
+     *
      * @param routeId route ID to use
      */
+
     public void openRouteDiscussion(String routeId) {
         String discussionTitle = "";
         ObaRegion region = Application.get().getCurrentRegion();
@@ -831,6 +853,7 @@ public class ArrivalsListFragment extends ListFragment
 
     /**
      * Opens a discussion item in an ArrivalsListActivity
+     *
      * @param discussionTitle title of the Embedded Social topic
      */
     private void openDiscussion(String discussionTitle) {
@@ -847,8 +870,9 @@ public class ArrivalsListFragment extends ListFragment
 
     /**
      * Displays a social fragment
+     *
      * @param discussionTitle title of the Embedded Social topic
-     * @param addToBackStack true if this transaction should be added to the back stack
+     * @param addToBackStack  true if this transaction should be added to the back stack
      */
     public void displaySocialFragment(String discussionTitle, boolean addToBackStack) {
         Fragment discussionFragment = EmbeddedSocialUtils.getDiscussionFragment(discussionTitle);
@@ -1487,7 +1511,7 @@ public class ArrivalsListFragment extends ListFragment
 
     private void goToTripDetails(ArrivalInfo stop) {
         TripDetailsActivity.start(getActivity(),
-                stop.getInfo().getTripId(), stop.getInfo().getStopId(),
+                stop.getInfo().getTripId(), stop.getInfo().getStopId(), stop.getInfo().getRouteId(),
                 TripDetailsListFragment.SCROLL_MODE_STOP);
     }
 
